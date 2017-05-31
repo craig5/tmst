@@ -62,3 +62,11 @@ target/
 
 # Dev
 venv/*
+
+# temp files
+*.swp
+
+# temp so i dont accidently check it in
+docs/
+
+# End of file.

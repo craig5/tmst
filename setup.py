@@ -1,46 +1,66 @@
-#!/usr/bin/env python
-"""Setup script for sample package (python3)."""
-
-
+#!/usr/bin/env python3
+"""
+Setup for tmst (python3).
+"""
+from __future__ import print_function
+# core python libraries
+import distutils
+import distutils.cmd
 import distutils.core
-import glob
 import os
 import setuptools
-import sys
+# third party libraries
+import versioneer
+# custom libraries
 
 
-_NAME = 'tmst'
-_PYTHON_PKG_NAME = 'tmst'
-_PKG_VERSION = '0.0.1'
-_PKG_DESCRIPTION = 'Coming soon...'
-_PKG_AUTHOR_NAME = 'Craig Sebenik'
-_PKG_AUTHOR_EMAIL = 'craig5@users.noreply.github.com'
-_PKG_URL = 'http://www.friedserver.com/'
-_PKG_KEYWORDS = ['todo']
-#
+# Basic info.
+_PACKAGE_NAME = 'tmst'
 _BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 _LIB_DIR = 'lib'
-_DATA_DIR = 'data'
-_DATA_LIST = ['{0}/*'.format(_DATA_DIR)]
-_ENTRY_POINTS = {
+setup_args = {}
+setup_args['name'] = _PACKAGE_NAME
+setup_args['packages'] = setuptools.find_packages(exclude=['tests'])
+setup_args['version'] = versioneer.get_version()
+setup_args['test_suite'] = 'nose.collector'
+setup_args['setup_requires'] = ['nose>=1.0']
+setup_args['author'] = 'Craig Sebenik'
+setup_args['author_email'] = 'craig5@users.noreply.github.com'
+setup_args['description'] = 'Too Much Stuff Todo - ToDo list manager'
+setup_args['url'] = 'http://www.friedserver.com/'
+setup_args['keywords'] = ['todo']
+setup_args['license'] = 'Apache License 2.0'
+
+
+class InfoCommand(distutils.cmd.Command):
+    """Get info about this project."""
+    description = 'Get info about this project (e.g. setup args).'
+    user_options = []
+
+    def initialize_options(self):
+        pass
+
+    def finalize_options(self):
+        pass
+
+    def run(self):
+        """Info about this project."""
+        print('Setup args:')
+        data = []
+        data.append({'title': 'Version', 'value': setup_args['version']})
+        for cur in data:
+            print('  {title}: {value}'.format(**cur))
+
+
+setup_args['cmdclass'] = {'info': InfoCommand}
+setup_args['package_dir'] = {'': _LIB_DIR}
+setup_args['entry_points'] = {
     'console_scripts': [
         'tmst = tmst.scripts:cli'
     ]
 }
 
 
-setuptools.setup(
-    name=_NAME,
-    version=_PKG_VERSION,
-    description=_PKG_DESCRIPTION,
-    author=_PKG_AUTHOR_NAME,
-    author_email=_PKG_AUTHOR_EMAIL,
-    package_dir={'': _LIB_DIR},
-    packages=[_PYTHON_PKG_NAME],
-    package_data={'': _DATA_LIST},
-    entry_points=_ENTRY_POINTS,
-    url=_PKG_URL,
-    keywords=_PKG_KEYWORDS,
-)
-
-# End of file.
+if __name__ == '__main__':
+    # Stupid distutils doesn't support 'entry_points'.
+    setuptools.setup(**setup_args)

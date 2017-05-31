@@ -1,0 +1,48 @@
+# core python libraries
+import logging
+import os
+import unittest
+# third party libraries
+# custom libraries
+import tmst
+
+
+logging.basicConfig()
+
+
+class TestItem(unittest.TestCase):
+
+    def setUp(self):
+        self.logger = logging.getLogger(__name__)
+        level = logging.INFO
+        verbose = os.environ.get('VERBOSE', None)
+        if verbose == '0' or verbose == 0:
+            level = logging.WARN
+        elif verbose:
+            level = logging.DEBUG
+            self.logger.debug('Logging reset to debug.')
+        self.logger.setLevel(level)
+        this_file = os.path.abspath(__file__)
+        self.tests_dir = os.path.dirname(this_file)
+        self.base_dir = os.path.dirname(self.tests_dir)
+        self.cases_dir = os.path.join(self.tests_dir, 'cases')
+
+    def tearDown(self):
+        pass
+
+    def test_read_simple_items(self):
+        """Test the sample data can be loaded and parsed."""
+        simple_dir = os.path.join(self.cases_dir, 'simple')
+        self.logger.debug('Reading dir: {}'.format(simple_dir))
+        todo = tmst.TodoItems()
+        todo.load_config()
+        todo.data_dir = simple_dir
+        self.logger.debug('Data dir: {}'.format(todo.data_dir))
+        self.logger.debug('Items dir: {}'.format(todo.items_dir))
+        self.logger.debug('Metadata file: {}'.format(todo.metadata_file))
+        todo.load_all_items()
+        self.assertEqual(todo.item_count, 1)
+
+
+if __name__ == '__main__':
+    unittest.main()
