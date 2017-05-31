@@ -4,16 +4,20 @@ DEFAULT: help
 
 VE_DIR = venv
 BIN_DIR = $(VE_DIR)/bin
+#
 PIP_CMD = $(BIN_DIR)/pip
 PYTHON_CMD = $(BIN_DIR)/python
 NOSE_CMD = $(BIN_DIR)/nosetests
-NOSE_ARGS =
 FLAKE8_CMD = $(BIN_DIR)/flake8
 # Reset the commands when running with travis.
 ifdef TRAVIS
+	PIP_CMD = pip
+	PYTHON_CMD = python
 	NOSE_CMD = nosetests
 	FLAKE8_CMD = flake8
 endif
+# arg lists
+NOSE_ARGS =
 #
 SYS_PYTHON = python3
 
