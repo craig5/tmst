@@ -54,6 +54,7 @@ clean:
 	# TODO change this to use 'find ... __pycache__ --exec rm {}];'
 	rm -rf lib/tmst/__pycache__
 	rm -rf lib/tmst.egg-info
+	rm -rf tests/__pycache__
 
 help:
 	@echo "Choose from the following:"
