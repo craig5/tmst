@@ -1,0 +1,16 @@
+{
+[
+	"id": 1,
+	"summary": "Some summary",
+	"details": "Lots of details....\nThat span multiple lines.",
+	"create-epoch": 1.0,
+	"delete-epoch": 0,
+	"moodify-epoch": 2.0,
+	"due-epoch": 4.0,
+	"remind-epoch": 3.0,
+	"priority": 2,
+	"status": "active",
+	"tags": ["tag1", "tag2"],
+	"category": "personal"
+]
+}

@@ -1,0 +1,4 @@
+{
+priority: blocker, critical, normal, minor, trivial
+status: done, active, backlog
+category: mp-work, personal, personal-projects
