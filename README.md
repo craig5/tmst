@@ -1,5 +1,4 @@
-### Status
-[![Build Status](ihttps://api.travis-ci.org/craig5/tmst.svg)](ihttps://travis-ci.org/craig5/tmst)
+[![Build Status](https://api.travis-ci.org/craig5/tmst.svg)](https://travis-ci.org/craig5/tmst)
 
 # Overview
 
