@@ -33,13 +33,18 @@ class TestItem(unittest.TestCase):
     def test_read_simple_items(self):
         """Test the sample data can be loaded and parsed."""
         simple_dir = os.path.join(self.cases_dir, 'simple')
-        self.logger.debug('Reading dir: {}'.format(simple_dir))
+        simple_data_dir = os.path.join(simple_dir, 'data')
+        config_dir = os.path.join(simple_dir, 'config')
+        tmst.config.GlobalConfig.config_dir = config_dir
+        #
         todo = tmst.TodoItems()
-        todo.load_config()
-        todo.data_dir = simple_dir
+        todo.data_dir = simple_data_dir
+        #
         self.logger.debug('Data dir: {}'.format(todo.data_dir))
         self.logger.debug('Items dir: {}'.format(todo.items_dir))
         self.logger.debug('Metadata file: {}'.format(todo.metadata_file))
+        self.logger.debug('Config file: {}'.format(todo.config_file))
+        todo.load_config()
         todo.load_all_items()
         self.assertEqual(todo.item_count, 1)
 
