@@ -1,14 +1,19 @@
-#
-DEFAULT: help
-.DEFAULT: help
+.DEFAULT_GOAL := help
 
-VE_DIR = venv
-BIN_DIR = $(VE_DIR)/bin
+VENV_DIR = venv
+BIN_DIR = $(VENV_DIR)/bin
+LIB_DIR = lib
+TESTS_DIR = tests
 #
 PIP_CMD = $(BIN_DIR)/pip
 PYTHON_CMD = $(BIN_DIR)/python
+# TODO remove nose and use pytest
+PUR_CMD = $(BIN_DIR)/pur
 NOSE_CMD = $(BIN_DIR)/nosetests
 FLAKE8_CMD = $(BIN_DIR)/flake8
+FLAKE8_ARGS =
+ISORT_CMD = $(BIN_DIR)/isort
+ISORT_ARGS = --diff --check
 # Reset the commands when running with travis.
 ifdef TRAVIS
 	PIP_CMD = pip
@@ -19,35 +24,54 @@ endif
 # arg lists
 NOSE_ARGS =
 #
-SYS_PYTHON = python3
+SYS_PYTHON_CMD = python3
+
+_virtualenv:
+ifeq ("$(DISABLE_VIRTUAL_ENV)", "true")
+	$(warning "Disabling creating virtualenv.. (DISABLE_VIRTUAL_ENV:'$(DISABLE_VIRTUAL_ENV)')")
+else
+	$(SYS_PYTHON_CMD) -m venv $(VENV_DIR)
+endif
+
+
+_pip_reqs:
+	$(PIP_CMD) $(PIP_INSTALL_ARGS) install --upgrade pip
+	$(PIP_CMD) $(PIP_INSTALL_ARGS) install --upgrade setuptools wheel
+	$(PIP_CMD) install -r requirements.txt
+
+_dev_reqs:
+	$(PIP_CMD) $(PIP_INSTALL_ARGS) install --upgrade pur invoke
+	$(PIP_CMD) $(PIP_INSTALL_ARGS) install -r dev_requirements.txt
+
+_test_reqs:
+	$(PIP_CMD) install -r $(TESTS_DIR)/requirements.txt
+
+_install_self:
+	$(PIP_CMD) install -e .
+
+ci-dev: _virtualenv _pip_reqs _test_reqs _install_self
+
+dev: ci-dev _dev_reqs
+
+update-reqs:
+	$(PUR_CMD) --force --requirement requirements.txt
+	$(PUR_CMD) --force --requirement $(TESTS_DIR)/requirements.txt
+	$(PUR_CMD) --force --requirement dev_requirements.txt
 
 test:
 	@echo "Using flake8 command: $(FLAKE8_CMD)"
-	$(FLAKE8_CMD)
-	@echo "Usng nose command: $(NOSE_CMD)"
-	@echo "	with args: $(NOSE_ARGS)"
-	$(NOSE_CMD) $(NOSE_ARGS)
+	$(FLAKE8_CMD) $(FLAKE8_ARGS) $(LIB_DIR)
+	$(FLAKE8_CMD) $(FLAKE8_ARGS) $(TESTS_DIR)
+	$(FLAKE8_CMD) $(FLAKE8_ARGS) setup.py
+	#@echo "Usng nose command: $(NOSE_CMD)"
+	#@echo "	with args: $(NOSE_ARGS)"
+	#$(NOSE_CMD) $(NOSE_ARGS)
 
 ci-test:
 	nosetests $(NOSE_ARGS)
 
-_pre_dev:
-	wget \
-		--quiet \
-		--no-clobber \
-		--directory-prefix=$(VE_DIR) \
-		https://bootstrap.pypa.io/get-pip.py
-
-dev: _pre_dev
-	$(SYS_PYTHON) -m venv --without-pip $(VE_DIR)
-	$(PYTHON_CMD) $(VE_DIR)/get-pip.py
-	$(PIP_CMD) install -r requirements.txt
-	$(PIP_CMD) install -r dev_requirements.txt
-	$(PIP_CMD) install -r tests/requirements.txt
-	$(PYTHON_CMD) setup.py develop
-
 clean:
-	rm -rf $(VE_DIR)
+	rm -rf $(VENV_DIR)
 	rm -rf build
 	rm -rf dist
 	rm -rf __pycache__
