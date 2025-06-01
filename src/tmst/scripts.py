@@ -1,32 +1,29 @@
-"""
-CLI routines.
-"""
-# python core libraries
+"""CLI routines."""
 import argparse
 import logging
-# third party libraries
-# custom libraries
+
 import tmst
 import tmst.config
 
-
 _EXIT_CODE = {
     'bad_item_id': 11
-    }
+}
 
 
 class CommandLine(tmst.config.GlobalConfig):
     logger_level = logging.WARN
 
     def __init__(self):
-        self.__init_logger()
-        self.__init_vars()
-        self.__init_cli()
+        super().__init__()
+        self._init_logger()
+        #
+        self.item_id = None
+        self.command = None
+        self.args = None
+        #
+        self._init_cli()
 
-    def __init_vars(self):
-        pass
-
-    def __init_logger(self):
+    def _init_logger(self):
         logger_name = self.base_logger_name
         logger_level = self.logger_level
         self.logger = logging.getLogger(logger_name)
@@ -40,9 +37,9 @@ class CommandLine(tmst.config.GlobalConfig):
         handler = logging.StreamHandler()
         handler.setFormatter(formatter)
         self.logger.addHandler(handler)
-        self.logger.debug('Logger initialized: {}'.format(logger_name))
+        self.logger.debug('Logger initialized: %s', logger_name)
 
-    def __init_cli(self):
+    def _init_cli(self):
         self.cli = argparse.ArgumentParser()
         self.cli.add_argument(
             '--verbose',
@@ -66,7 +63,7 @@ class CommandLine(tmst.config.GlobalConfig):
             help='Item id to edit.'
             )
         # create
-        create_parser = subparsers.add_parser(  # noqa: F841
+        create_parser = subparsers.add_parser(  # noqa:F841 pylint: disable=W0612
             'create',
             help='Create help.'
             )
@@ -81,7 +78,7 @@ class CommandLine(tmst.config.GlobalConfig):
             help='List all items.'
             )
         # config
-        config_parser = subparsers.add_parser(  # noqa: F841
+        config_parser = subparsers.add_parser(  # noqa:F841 pylint: disable=W0612
             'config',
             help='Config help.'
             )
@@ -108,7 +105,7 @@ class CommandLine(tmst.config.GlobalConfig):
         try:
             todo_items.main(self.command)
         except tmst.UnknownItemIdException:
-            raise SystemExit(_EXIT_CODE['bad_item_id'])
+            raise SystemExit(_EXIT_CODE['bad_item_id'])  # pylint: disable=W0707
 
 
 def cli():

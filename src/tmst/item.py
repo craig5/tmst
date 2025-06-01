@@ -1,11 +1,8 @@
 """Individual todo items."""
-# core python libraries
 import time
-# third party libraris
-# custom libraries
-import tmst
-import tmst.shared
 
+import tmst.config
+import tmst.shared
 
 _DATA_KEYS = [
     {'name': 'summary'},
@@ -13,10 +10,12 @@ _DATA_KEYS = [
 ]
 
 
-class Item(tmst.shared.BaseObject, tmst.config.GlobalConfig):
+# TODO move config to a composition and not inherited
+class Item(tmst.config.GlobalConfig):  # pylint: disable=R0902
 
     def __init__(self, item_id=None, data=None):
-        self.init_logger()
+        super().__init__()
+        self.logger = tmst.shared.create_logger(self)
         self.item_id = item_id
         self.__init_vars()
         self.__load_data(data)
@@ -88,8 +87,7 @@ class Item(tmst.shared.BaseObject, tmst.config.GlobalConfig):
         created_human = time.strftime(
             '%Y-%m-%d %H:%M:%S',
             time.localtime(self.created_epoch))
-
-        out_string += ' ({})'.format(created_human)
+        out_string += f' ({created_human})'
         return out_string
 
     def show_single_line(self):
@@ -101,5 +99,5 @@ class Item(tmst.shared.BaseObject, tmst.config.GlobalConfig):
         if deets is not None:
             dlines = deets.split('\n')
             for add_me in dlines:
-                out += '\n\t{}'.format(add_me)
+                out += f'\n\t{add_me}'
         return out

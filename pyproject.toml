@@ -1,0 +1,46 @@
+[project]
+name = "tmst"
+dynamic = ["version"]
+authors = [
+  {name = "Craig Sebenik", email = "craig5@users.noreply.github.com"},
+]
+description = 'Too Much Stuff Todo - ToDo list manager'
+keywords = ['todo']
+license = 'Apache-2.0'
+
+[project.urls]
+Homepage = 'http://www.friedserver.com/'
+
+
+[build-system]
+requires = ["setuptools>=64", "setuptools_scm>=8"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools_scm]
+
+[project.scripts]
+tmst = "tmst.scripts:cli"
+
+[tool.pylint]
+notes = "FIXME,XXX"  # Add "TODO" back if you want to "fail" when found.
+disable = [
+  "C0114",  # (missing-module-docstring)
+  "C0115",  # (missing-class-docstring)
+  "C0116",  # (missing-function-docstring)
+]
+
+[tool.flake8]
+exclude = ".git,venv"
+max-line-length = "95"
+max-complexity = "10"
+# verbose = 0
+
+[tool.bootstrap]
+verbose = true
+# Version status: https://devguide.python.org/versions/
+minimum_python_version = '3.12'
+with_pip = true
+#symlinks = true
+additional_packages = ['wheel', 'invoke']
+
+# vim: set filetype:toml:
