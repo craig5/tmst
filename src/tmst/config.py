@@ -1,15 +1,11 @@
-"""
-Global, shared config.
-"""
-# core python libraries
+"""Global, shared config."""
 import configparser
 import logging
 import os
-# third party libraries
-# custom libraries
 
 
-class GlobalConfig(object):
+class GlobalConfig:
+    # TODO remove all(?) of these class vars
     package_name = 'tmst'
     base_logger_name = package_name
     logger_level = logging.INFO
@@ -26,7 +22,9 @@ class GlobalConfig(object):
     }
     default_command = 'list'
 
-    def init_config_vars(self):
+    def __init__(self):
+        logger_name = self.__class__.__name__
+        self.logger = logging.getLogger(logger_name)
         self._items_dir = None
         self._metadata_file = None
         self._config_file = None
@@ -38,7 +36,7 @@ class GlobalConfig(object):
         if self._items_dir is None:
             self._items_dir = os.path.join(
                 self.data_dir, self.default_items_dir)
-        self.logger.debug('Items file: {}'.format(self._items_dir))
+        self.logger.debug('Items file: %s', self._items_dir)
         return self._items_dir
 
     @property
@@ -46,7 +44,7 @@ class GlobalConfig(object):
         if self._metadata_file is None:
             self._metadata_file = os.path.join(
                 self.data_dir, self.default_metadata_file)
-        self.logger.debug('Metadata file: {}'.format(self._metadata_file))
+        self.logger.debug('Metadata file: %s', self._metadata_file)
         return self._metadata_file
 
     @property
@@ -56,7 +54,7 @@ class GlobalConfig(object):
         return self._config_file
 
     def load_config(self):
-        self.logger.debug('Loading config: {}'.format(self.config_file))
+        self.logger.debug('Loading config: %s', self.config_file)
         self.config = configparser.ConfigParser()
         # TODO catch an error if the file doesn't exist
         # Prompt to create an empty one for 1st time users
@@ -67,4 +65,4 @@ class GlobalConfig(object):
             self.data_dir = raw_data_dir
         else:
             self.data_dir = os.path.join(self.home_dir, raw_data_dir)
-        self.logger.debug('Data dir: {}'.format(self.data_dir))
+        self.logger.debug('Data dir: %s', self.data_dir)

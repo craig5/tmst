@@ -1,11 +1,8 @@
-# core python libraries
 import logging
 import os
 import unittest
-# third party libraries
-# custom libraries
-import tmst
 
+import tmst
 
 logging.basicConfig()
 
@@ -16,7 +13,7 @@ class TestItem(unittest.TestCase):
         self.logger = logging.getLogger(__name__)
         level = logging.INFO
         verbose = os.environ.get('VERBOSE', None)
-        if verbose == '0' or verbose == 0:
+        if verbose == '0' or verbose == 0:  # pylint: disable=R1714
             level = logging.WARN
         elif verbose:
             level = logging.DEBUG
@@ -40,10 +37,10 @@ class TestItem(unittest.TestCase):
         todo = tmst.TodoItems()
         todo.data_dir = simple_data_dir
         #
-        self.logger.debug('Data dir: {}'.format(todo.data_dir))
-        self.logger.debug('Items dir: {}'.format(todo.items_dir))
-        self.logger.debug('Metadata file: {}'.format(todo.metadata_file))
-        self.logger.debug('Config file: {}'.format(todo.config_file))
+        self.logger.debug('Data dir: %s', todo.data_dir)
+        self.logger.debug('Items dir: %s', todo.items_dir)
+        self.logger.debug('Metadata file: %s', todo.metadata_file)
+        self.logger.debug('Config file: %s', todo.config_file)
         todo.load_config()
         todo.load_all_items()
         self.assertEqual(todo.item_count, 1)

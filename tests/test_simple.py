@@ -1,10 +1,6 @@
-# core python libraries
 import logging
 import os
 import unittest
-# third party libraries
-# custom libraries
-
 
 logging.basicConfig()
 _LOGGER = logging.getLogger(__name__)
@@ -26,7 +22,8 @@ class SimpleTest(unittest.TestCase):
     def test_simple(self):
         """Simple test to verify nose is working."""
         _LOGGER.debug('Debug messing in test_simple.')
-        self.assertTrue(True)
+        ugh = True
+        self.assertTrue(ugh)
 
 
 if __name__ == '__main__':
